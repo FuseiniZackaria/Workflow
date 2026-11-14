@@ -1,0 +1,26 @@
+# Job-search targets (edit freely)
+candidate: Fuseini Zackaria
+location: Ghana            # no timezone restriction
+min_hourly_usd: 20         # ~= $41,600/yr (2080h)
+work_arrangement: remote
+seniority: [entry_level, junior, mid]   # CV is junior; skip senior/6+yr roles
+titles:
+  - Junior Web Developer
+  - Junior Software Engineer
+  - Full Stack Developer
+  - React Developer
+  - Laravel Developer
+  - PHP Developer
+  - Frontend Developer
+  - Python Developer
+  - AI Engineer (junior) / AI-trainer / LLM evaluator contracts
+posted_within_days: 3
+exclude_companies: []      # none
+hard_skip:                 # reject automatically
+  - "US citizenship / security clearance required"
+  - "must be based in US/UK/EU/Canada (work-authorization or residency required)"
+  - "6+ years / senior / staff / lead"
+  - "unpaid, commission-only, pay-to-apply (e.g. paid 'training' programs)"
+  - "ghost_score >= 60"
+auto_submit: true
+fit_threshold_to_submit: 70   # 0-100 score; below this, log only

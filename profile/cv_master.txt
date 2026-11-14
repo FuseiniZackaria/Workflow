@@ -1,0 +1,57 @@
+                                              FUSEINI ZACKARIA
+                                     Web Developer | Software Developer | IT Professional
+                                   +233 20 245 7446 /0549440550 • Stillzackman@gmail.com • Ghana
+
+PROFILE
+Motivated and detail-oriented Web Development graduate with practical experience building responsive websites, full-stack
+applications, and digital solutions. Skilled in JavaScript, React, PHP, Laravel, Python, HTML, CSS, C#, SQL, and ASP.NET. Strong
+problem-solving, communication, teamwork, and troubleshooting abilities, with a strong interest in software development, AI-enabled
+products, and modern web technologies.
+
+
+SKILLS & ABILITIES
+• Web & Software Development: JavaScript, React, PHP, Laravel, Python, HTML, CSS, C#, ASP.NET
+• Databases & Backend: SQL, database management, authentication, API integration, backend application development
+• Technical Support: Hardware/software troubleshooting, system optimization, debugging, and issue resolution
+• Development Tools: Git, GitHub, responsive design, deployment workflows, modern web development practices
+• Professional Skills: Communication, teamwork, critical thinking, adaptability, time management, attention to detail, working under
+pressure
+
+
+PROFESSIONAL & PROJECT EXPERIENCE
+Web Developer / Software Developer — CodeCraft
+Accra, Ghana | Project-Based / Freelance
+• Designed and developed responsive business websites and digital solutions using modern web technologies.
+• Built reusable interfaces and interactive web features with React, JavaScript, HTML, CSS, and Tailwind-based workflows.
+• Worked on client-oriented website concepts, improving usability, responsive design, and online presentation.
+• Used Git and GitHub for source-code management and maintained development projects through structured workflows.
+• Integrated forms, databases, authentication, and third-party services into web applications where required.
+Full-Stack E-commerce Website — Academic Project
+• Built a full-stack e-commerce web application using React and Laravel.
+• Implemented secure user authentication and database functionality.
+• Optimized database queries and application performance, achieving an estimated 40% reduction in page load time.
+Portfolio Website — Personal Project
+• Designed and deployed a responsive personal portfolio using HTML, CSS, and JavaScript.
+• Organized projects and technical skills into a professional online portfolio for career and client opportunities.
+Web Development & Technical Support — Project-Based Experience
+• Diagnosed and resolved common software, website, and development issues during personal and project-based work.
+• Worked with databases and application configurations while troubleshooting bugs and improving system functionality.
+• Collaborated with others to understand requirements, deliver solutions, and meet project deadlines.
+
+
+EDUCATION
+The Ghana-India Kofi Annan Centre of Excellence in ICT (AITI-KACE), Accra
+Diploma in Business Computing (Web Development) | 2023–2024
+Presbyterian Boys' Secondary School
+WASSCE — Business | 2019–2022
+
+
+ADDITIONAL STRENGTHS
+• Strong interest in AI, software engineering, automation, and digital product development.
+• Ability to learn new technologies quickly and apply them to practical projects.
+• Comfortable working independently while also collaborating with teams.
+
+REFERENCES
+Mr. Felix Dumenu — Pharmacy Stores Manager, The Trust Hospital, Osu | +233 50 044 8190
+Mr. David Nii — Lecturer, AITI-KACE, Accra | +233 55 566 1029
+
