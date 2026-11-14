@@ -1,6 +1,6 @@
 # Daily job-search run
 
-Inputs: `profile/cv_master.txt`, `config.yml`, `tracker/applications.csv`.
+Inputs: `profile/cv_master.txt` (text) / `profile/Fuseini_Zackaria_CV_v2.pdf` (current CV with GitHub + portfolio links; attach this one), `config.yml`, `tracker/applications.csv`.
 
 1. **Search** (last 3 days, remote, >= $20/hr) via JobsPipe `search_jobs` (filters: remote, posted_at_max_age_days=3,
    min_salary_usd=41600, titles from config), plus ZipRecruiter / Jobs & Careers / Firecrawl `jobs_search` for extra coverage.
