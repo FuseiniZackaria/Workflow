@@ -1,0 +1,311 @@
+<title>Yoggies Pizza Order</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+/* Layout: one narrow phone-first column. Sticky category tabs, menu cards with size chips, bottom cart bar that opens a checkout sheet. */
+:root{
+  --bg:#fbf6f7; --surface:#ffffff; --ink:#1e1519; --muted:#76666d; --line:#ecdfe3;
+  --accent:#d9145a; --accent-ink:#ffffff; --accent-soft:#fde6ee; --ok:#1a7f4b;
+  --font-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --font-body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#171114; --surface:#231a1f; --ink:#f7eef1; --muted:#b4a1a9; --line:#3b2d34;
+  --accent:#ff4f89; --accent-ink:#2a0412; --accent-soft:#3a1824; --ok:#4cc88a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#171114; --surface:#231a1f; --ink:#f7eef1; --muted:#b4a1a9; --line:#3b2d34;
+  --accent:#ff4f89; --accent-ink:#2a0412; --accent-soft:#3a1824; --ok:#4cc88a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.45 var(--font-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 120px}
+.wrap{max-width:640px;margin:0 auto}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+header{padding-top:20px}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:48px;height:48px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;
+  font:800 22px var(--font-display);flex:none}
+h1{font:800 28px/1.05 var(--font-display);margin:0;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:13.5px;margin:2px 0 0}
+.info{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0;padding:0;list-style:none}
+.info li{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:13px}
+.notice{margin:14px 0 0;font-size:13px;color:var(--muted)}
+
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin:16px -16px 0;padding:8px 16px;
+  display:flex;gap:8px;overflow-x:auto;border-bottom:1px solid var(--line);scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+nav button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:500}
+nav button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+
+section{padding-top:22px}
+h2{font:800 21px var(--font-display);margin:0 0 4px}
+.cat-note{color:var(--muted);margin:0 0 12px;font-size:13.5px}
+.items{display:grid;gap:12px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.item h3{margin:0;font:700 16.5px var(--font-body)}
+.item p{margin:2px 0 10px;color:var(--muted);font-size:13.5px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:6px 6px 6px 12px;min-width:0}
+.opt .lab{font-size:13.5px}
+.price{font-weight:700;font-variant-numeric:tabular-nums}
+.add{border:0;background:var(--accent);color:var(--accent-ink);width:32px;height:32px;border-radius:8px;font-size:20px;line-height:1;cursor:pointer;font-weight:700}
+.step{display:flex;align-items:center;gap:2px}
+.step button{border:1px solid var(--line);background:var(--surface);width:32px;height:32px;border-radius:8px;font-size:18px;cursor:pointer}
+.step b{min-width:24px;text-align:center;font-variant-numeric:tabular-nums}
+.opt.on{border-color:var(--accent);background:var(--accent-soft)}
+
+#bar{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  background:var(--bg);border-top:1px solid var(--line)}
+#bar button{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:640px;margin:0 auto;border:0;border-radius:12px;
+  background:var(--accent);color:var(--accent-ink);padding:14px 18px;font-weight:700;font-size:16px;cursor:pointer}
+#bar button:disabled{background:var(--line);color:var(--muted);cursor:default}
+
+#sheet{position:fixed;inset:0;z-index:30;background:color-mix(in srgb,#000 55%,transparent);display:flex;align-items:flex-end;justify-content:center}
+.panel{background:var(--bg);width:100%;max-width:640px;max-height:92%;overflow:auto;border-radius:18px 18px 0 0;
+  padding:18px 16px calc(20px + env(safe-area-inset-bottom,0px))}
+.panel h2{display:flex;justify-content:space-between;align-items:center}
+.x{border:0;background:var(--surface);border:1px solid var(--line);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px}
+.line{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.line .nm{min-width:0}
+.line small{display:block;color:var(--muted)}
+.total{display:flex;justify-content:space-between;font-weight:700;font-size:17px;padding:12px 0}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 4px}
+.seg button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px;cursor:pointer;font-weight:500}
+.seg button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);font-weight:700}
+label{display:block;font-weight:500;font-size:13.5px;margin:12px 0 4px}
+input[type=text],input[type=tel],textarea{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:11px 12px}
+textarea{min-height:70px;resize:vertical}
+.err{color:var(--accent);font-size:13px;min-height:18px;margin:8px 0 0}
+.send{display:block;text-align:center;text-decoration:none;background:#1a9e55;color:#fff;border-radius:12px;padding:14px;font-weight:700;font-size:16px;margin-top:10px}
+.alt{display:block;width:100%;margin-top:8px;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px;cursor:pointer}
+.small{color:var(--muted);font-size:12.5px;margin:10px 0 0}
+.empty{color:var(--muted);padding:18px 0;text-align:center}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true">Y</div>
+      <div>
+        <h1>Yoggies Pizza</h1>
+        <p class="sub">Pizza, shawarma, loaded fries and rice dishes</p>
+      </div>
+    </div>
+    <ul class="info">
+      <li>Kasoa, Adade Junction</li>
+      <li>Order line: <span id="phoneShown">050 190 9191</span></li>
+    </ul>
+    <p class="notice">Pick your food, tap <b>View order</b>, and send it to us on WhatsApp. We confirm the total and delivery fee with you.</p>
+  </header>
+
+  <nav id="tabs" aria-label="Menu categories"></nav>
+  <main id="menu"></main>
+</div>
+
+<div id="bar"><button id="openCart" type="button" disabled><span id="barLeft">Your order is empty</span><span id="barRight"></span></button></div>
+
+<div id="sheet" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <h2 id="sheetTitle">Your order <button class="x" id="closeCart" type="button" aria-label="Close">×</button></h2>
+    <div id="lines"></div>
+    <div class="total"><span>Food total</span><span id="grand" class="price"></span></div>
+
+    <div class="seg" role="group" aria-label="How do you want it?">
+      <button type="button" id="mDeliver" aria-pressed="true">Delivery</button>
+      <button type="button" id="mPickup" aria-pressed="false">Pickup</button>
+    </div>
+
+    <label for="cName">Your name</label>
+    <input id="cName" type="text" autocomplete="name" placeholder="e.g. Ama">
+    <label for="cPhone">Your phone number</label>
+    <input id="cPhone" type="tel" autocomplete="tel" placeholder="e.g. 024 123 4567">
+    <div id="addrBox">
+      <label for="cAddr">Delivery location and landmark</label>
+      <textarea id="cAddr" placeholder="e.g. Near Adade Junction, blue gate"></textarea>
+    </div>
+    <label for="cNote">Note for the kitchen (optional)</label>
+    <input id="cNote" type="text" placeholder="e.g. no onions, extra sauce">
+
+    <p class="err" id="err" role="alert"></p>
+    <a class="send" id="send" href="#" target="_blank" rel="noopener">Send order on WhatsApp</a>
+    <button class="alt" id="copy" type="button">Copy order text</button>
+    <p class="small">The WhatsApp button opens a chat with Yoggies Pizza (<span id="phoneShown2"></span>) with your order already typed. Press send there to place it. If it does not open, copy the order text and message that number.</p>
+  </div>
+</div>
+
+<script>
+/* ===== EDIT HERE =====
+   PHONE_INTL: shop WhatsApp number, country code first, no plus or spaces (Ghana = 233, drop the leading 0).
+   Prices are in Ghana cedis. These are sample prices: replace them with the real ones. */
+var PHONE_INTL = "233501909191";
+var PHONE_LOCAL = "050 190 9191";
+var CURRENCY = "GH₵";
+var MENU = [
+  {cat:"Pizza", note:"Hand-tossed, baked fresh.", items:[
+    {id:"pz1", name:"Chicken Pizza", desc:"Chicken, cheese, vegetables", opts:[["Small",70],["Medium",110],["Large",150]]},
+    {id:"pz2", name:"Sausage Pizza", desc:"Sausage, cheese, vegetables", opts:[["Small",70],["Medium",110],["Large",150]]},
+    {id:"pz3", name:"Beef Pizza", desc:"Seasoned beef, cheese, vegetables", opts:[["Small",75],["Medium",115],["Large",155]]},
+    {id:"pz4", name:"Cheese Pizza", desc:"Mozzarella and house sauce", opts:[["Small",60],["Medium",95],["Large",130]]}
+  ]},
+  {cat:"Shawarma", note:"Wrapped to order.", items:[
+    {id:"sh1", name:"Chicken Shawarma", desc:"Chicken, vegetables, mayo, sauce", opts:[["Regular",40],["Large",55]]},
+    {id:"sh2", name:"Sausage Shawarma", desc:"Sausage, vegetables, mayo, sauce", opts:[["Regular",40],["Large",55]]},
+    {id:"sh3", name:"Mixed Shawarma", desc:"Chicken and sausage together", opts:[["Regular",45],["Large",60]]}
+  ]},
+  {cat:"Loaded Fries", note:"Topped with cheese, vegetables, mayo and sauce.", items:[
+    {id:"lf1", name:"Chicken Loaded Fries", desc:"Fries, chicken, cheese, sauce", opts:[["Regular",55],["Large",75]]},
+    {id:"lf2", name:"Sausage Loaded Fries", desc:"Fries, sausage, cheese, sauce", opts:[["Regular",55],["Large",75]]},
+    {id:"lf3", name:"Beef Loaded Fries", desc:"Fries, seasoned beef, cheese, sauce", opts:[["Regular",60],["Large",80]]}
+  ]},
+  {cat:"Rice Dishes", note:"Served hot with a side.", items:[
+    {id:"rc1", name:"Jollof Rice", desc:"With chicken", opts:[["Plate",50]]},
+    {id:"rc2", name:"Fried Rice", desc:"With chicken", opts:[["Plate",50]]},
+    {id:"rc3", name:"Fried Rice and Jollof", desc:"Half and half, with chicken", opts:[["Plate",55]]}
+  ]},
+  {cat:"Drinks", note:"Boba and soft drinks.", items:[
+    {id:"dr1", name:"Yoggies Boba", desc:"Milk tea with tapioca pearls", opts:[["Regular",35],["Large",50]]},
+    {id:"dr2", name:"Soft Drink", desc:"Coke, Fanta or Sprite", opts:[["Bottle",10]]},
+    {id:"dr3", name:"Bottled Water", desc:"", opts:[["Bottle",5]]}
+  ]}
+];
+/* ===== END EDIT ===== */
+
+var cart = {}; // key "id|index" -> qty
+var mode = "Delivery";
+var $ = function(id){return document.getElementById(id)};
+function money(n){return CURRENCY+" "+n.toLocaleString("en-GH")}
+try{var saved=JSON.parse(localStorage.getItem("yoggies-cart")||"{}"); if(saved&&typeof saved==="object") cart=saved}catch(e){}
+function persist(){try{localStorage.setItem("yoggies-cart",JSON.stringify(cart))}catch(e){}}
+
+var flat = {};
+MENU.forEach(function(c){c.items.forEach(function(it){it.opts.forEach(function(o,i){
+  flat[it.id+"|"+i]={name:it.name,label:o[0],price:o[1],multi:it.opts.length>1}})})});
+Object.keys(cart).forEach(function(k){if(!flat[k]) delete cart[k]});
+
+function entries(){return Object.keys(cart).filter(function(k){return cart[k]>0}).map(function(k){return {k:k,q:cart[k],it:flat[k]}})}
+function total(){return entries().reduce(function(s,e){return s+e.q*e.it.price},0)}
+function count(){return entries().reduce(function(s,e){return s+e.q},0)}
+function lineName(e){return e.it.multi?e.it.name+" ("+e.it.label+")":e.it.name}
+
+function buildMenu(){
+  var tabs=$("tabs"), menu=$("menu");
+  MENU.forEach(function(c,ci){
+    var b=document.createElement("button"); b.type="button"; b.textContent=c.cat;
+    b.setAttribute("aria-pressed","false"); b.onclick=function(){
+      document.getElementById("cat"+ci).scrollIntoView({behavior:"smooth",block:"start"});
+    }; tabs.appendChild(b);
+    var s=document.createElement("section"); s.id="cat"+ci; s.style.scrollMarginTop="64px";
+    s.innerHTML='<h2></h2><p class="cat-note"></p><div class="items"></div>';
+    s.querySelector("h2").textContent=c.cat; s.querySelector(".cat-note").textContent=c.note;
+    var box=s.querySelector(".items");
+    c.items.forEach(function(it){
+      var d=document.createElement("div"); d.className="item";
+      var h='<h3></h3>'+(it.desc?'<p></p>':'<p style="margin:0 0 10px"></p>')+'<div class="opts"></div>';
+      d.innerHTML=h; d.querySelector("h3").textContent=it.name; d.querySelector("p").textContent=it.desc;
+      var oc=d.querySelector(".opts");
+      it.opts.forEach(function(o,i){
+        var key=it.id+"|"+i, w=document.createElement("div"); w.className="opt"; w.dataset.key=key;
+        w.innerHTML='<span class="lab"></span><span class="price"></span><span class="ctl"></span>';
+        w.querySelector(".lab").textContent=o[0]; w.querySelector(".price").textContent=money(o[1]);
+        oc.appendChild(w);
+      });
+      box.appendChild(d);
+    });
+    menu.appendChild(s);
+  });
+}
+function paintControls(){
+  document.querySelectorAll(".opt").forEach(function(w){
+    var k=w.dataset.key, q=cart[k]||0, ctl=w.querySelector(".ctl");
+    w.classList.toggle("on",q>0);
+    if(q>0){
+      ctl.innerHTML='<span class="step"><button type="button" aria-label="Remove one">−</button><b>'+q+'</b><button type="button" aria-label="Add one">+</button></span>';
+      var bs=ctl.querySelectorAll("button"); bs[0].onclick=function(){change(k,-1)}; bs[1].onclick=function(){change(k,1)};
+    }else{
+      ctl.innerHTML='<button class="add" type="button" aria-label="Add">+</button>';
+      ctl.querySelector("button").onclick=function(){change(k,1)};
+    }
+  });
+}
+function change(k,d){cart[k]=Math.max(0,(cart[k]||0)+d); if(!cart[k]) delete cart[k]; persist(); render()}
+function render(){
+  paintControls();
+  var n=count(), btn=$("openCart");
+  btn.disabled=n===0;
+  $("barLeft").textContent=n?("View order · "+n+(n===1?" item":" items")):"Your order is empty";
+  $("barRight").textContent=n?money(total()):"";
+  if(!$("sheet").hidden) renderSheet();
+}
+function renderSheet(){
+  var box=$("lines"); box.innerHTML="";
+  var es=entries();
+  if(!es.length){box.innerHTML='<p class="empty">Nothing here yet. Close this and add some food.</p>'}
+  es.forEach(function(e){
+    var r=document.createElement("div"); r.className="line";
+    r.innerHTML='<div class="nm"><span></span><small></small></div><div class="step"><button type="button" aria-label="Remove one">−</button><b></b><button type="button" aria-label="Add one">+</button></div>';
+    r.querySelector(".nm span").textContent=lineName(e);
+    r.querySelector("small").textContent=money(e.q*e.it.price);
+    r.querySelector("b").textContent=e.q;
+    var bs=r.querySelectorAll("button"); bs[0].onclick=function(){change(e.k,-1)}; bs[1].onclick=function(){change(e.k,1)};
+    box.appendChild(r);
+  });
+  $("grand").textContent=money(total());
+  $("addrBox").hidden=mode!=="Delivery";
+  $("mDeliver").setAttribute("aria-pressed",mode==="Delivery"); $("mPickup").setAttribute("aria-pressed",mode==="Pickup");
+  if(!es.length){closeSheet()}
+  updateLink();
+}
+function orderText(){
+  var L=["*New order – Yoggies Pizza*",""];
+  entries().forEach(function(e){L.push("• "+e.q+" × "+lineName(e)+" – "+money(e.q*e.it.price))});
+  L.push("","*Food total: "+money(total())+"*","","Type: "+mode);
+  L.push("Name: "+$("cName").value.trim());
+  L.push("Phone: "+$("cPhone").value.trim());
+  if(mode==="Delivery") L.push("Location: "+$("cAddr").value.trim());
+  var note=$("cNote").value.trim(); if(note) L.push("Note: "+note);
+  L.push("","Please confirm the total and delivery fee. Thank you!");
+  return L.join("\n");
+}
+function problem(){
+  if(!count()) return "Add at least one item.";
+  if(!$("cName").value.trim()) return "Enter your name.";
+  if($("cPhone").value.replace(/\D/g,"").length<9) return "Enter a phone number we can reach.";
+  if(mode==="Delivery" && !$("cAddr").value.trim()) return "Enter your delivery location.";
+  return "";
+}
+function updateLink(){
+  $("send").href="https://wa.me/"+PHONE_INTL+"?text="+encodeURIComponent(orderText());
+}
+function openSheet(){$("sheet").hidden=false; renderSheet()}
+function closeSheet(){$("sheet").hidden=true}
+
+buildMenu();
+$("phoneShown").textContent=PHONE_LOCAL; $("phoneShown2").textContent=PHONE_LOCAL;
+$("openCart").onclick=openSheet; $("closeCart").onclick=closeSheet;
+$("sheet").onclick=function(e){if(e.target===$("sheet")) closeSheet()};
+$("mDeliver").onclick=function(){mode="Delivery";renderSheet()};
+$("mPickup").onclick=function(){mode="Pickup";renderSheet()};
+["cName","cPhone","cAddr","cNote"].forEach(function(id){
+  try{var v=localStorage.getItem("yoggies-"+id); if(v) $(id).value=v}catch(e){}
+  $(id).addEventListener("input",function(){
+    try{ if(id!=="cNote") localStorage.setItem("yoggies-"+id,$(id).value) }catch(e){}
+    $("err").textContent=""; updateLink();
+  });
+});
+$("send").addEventListener("click",function(ev){
+  var p=problem(); if(p){ev.preventDefault(); $("err").textContent=p; return}
+  updateLink();
+});
+$("copy").onclick=function(){
+  var p=problem(); if(p){$("err").textContent=p; return}
+  var t=orderText(), b=$("copy");
+  function ok(){b.textContent="Copied. Paste it into WhatsApp."}
+  function fallback(){var a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();
+    try{document.execCommand("copy");ok()}catch(e){b.textContent="Copy failed. Select the text manually."}document.body.removeChild(a)}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(ok,fallback)}else fallback();
+};
+document.addEventListener("keydown",function(e){if(e.key==="Escape") closeSheet()});
+render();
+</script>
